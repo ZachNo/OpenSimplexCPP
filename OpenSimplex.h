@@ -16,60 +16,24 @@ public:
 	OpenSimplex& operator=(OpenSimplex&&);
 	virtual ~OpenSimplex();
 
-	virtual double noise(double x, double y);
-	virtual double noise(double x, double y, double z);
-	virtual double noise(double x, double y, double z, double w);
+    double noise(double x, double y);
+    double noise(double x, double y, double z);
+    double noise(double x, double y, double z, double w);
 
 private:
-	static constexpr const double STRETCH_CONSTANT_2D = -0.211324865405187;	// (1 / Math.sqrt(2 + 1) - 1) / 2
-	static constexpr const double SQUISH_CONSTANT_2D = 0.366025403784439;	// (Math.sqrt(2 + 1) - 1) / 2
-	static constexpr const double STRETCH_CONSTANT_3D = -1.0 / 6;			// (1 / Math.sqrt(3 + 1) - 1) / 3
-	static constexpr const double SQUISH_CONSTANT_3D = 1.0 / 3;				// (Math.sqrt(3 + 1) - 1) / 3
-	static constexpr const double STRETCH_CONSTANT_4D = -0.138196601125011;	// (1 / Math.sqrt(4 + 1) - 1) / 4
-	static constexpr const double SQUISH_CONSTANT_4D = 0.309016994374947;	// (Math.sqrt(4 + 1) - 1) / 4
-
-	static constexpr const int NORM_CONSTANT_2D = 47;
-	static constexpr const int NORM_CONSTANT_3D = 103;
-	static constexpr const int NORM_CONSTANT_4D = 30;
-
-	static constexpr const int DEFAULT_SEED = 0;
-
-	static constexpr const int8_t GRADIENTS_2D[4*4] = {
-		5, 2, 2, 5,
-		-5, 2, -2, 5,
-		5, -2, 2, -5,
-		-5, -2, -2, -5
-	};
-
-	static constexpr const int8_t GRADIENTS_3D[9*9] = {
-		-11, 4, 4, -4, 11, 4, -4, 4, 11,
-		11, 4, 4, 4, 11, 4, 4, 4, 11,
-		-11, -4, 4, -4, -11, 4, -4, -4, 11,
-		11, -4, 4, 4, -11, 4, 4, -4, 11,
-		-11, 4, -4, -4, 11, -4, -4, 4, -11,
-		11, 4, -4, 4, 11, -4, 4, 4, -11,
-		-11, -4, -4, -4, -11, -4, -4, -4, -11,
-		11, -4, -4, 4, -11, -4, 4, -4, -11
-	};
-
-	static constexpr const int8_t GRADIENTS_4D[16*16] = {
-		3, 1, 1, 1, 1, 3, 1, 1, 1, 1, 3, 1, 1, 1, 1, 3,
-		-3, 1, 1, 1, -1, 3, 1, 1, -1, 1, 3, 1, -1, 1, 1, 3,
-		3, -1, 1, 1, 1, -3, 1, 1, 1, -1, 3, 1, 1, -1, 1, 3,
-		-3, -1, 1, 1, -1, -3, 1, 1, -1, -1, 3, 1, -1, -1, 1, 3,
-		3, 1, -1, 1, 1, 3, -1, 1, 1, 1, -3, 1, 1, 1, -1, 3,
-		-3, 1, -1, 1, -1, 3, -1, 1, -1, 1, -3, 1, -1, 1, -1, 3,
-		3, -1, -1, 1, 1, -3, -1, 1, 1, -1, -3, 1, 1, -1, -1, 3,
-		-3, -1, -1, 1, -1, -3, -1, 1, -1, -1, -3, 1, -1, -1, -1, 3,
-		3, 1, 1, -1, 1, 3, 1, -1, 1, 1, 3, -1, 1, 1, 1, -3,
-		-3, 1, 1, -1, -1, 3, 1, -1, -1, 1, 3, -1, -1, 1, 1, -3,
-		3, -1, 1, -1, 1, -3, 1, -1, 1, -1, 3, -1, 1, -1, 1, -3,
-		-3, -1, 1, -1, -1, -3, 1, -1, -1, -1, 3, -1, -1, -1, 1, -3,
-		3, 1, -1, -1, 1, 3, -1, -1, 1, 1, -3, -1, 1, 1, -1, -3,
-		-3, 1, -1, -1, -1, 3, -1, -1, -1, 1, -3, -1, -1, 1, -1, -3,
-		3, -1, -1, -1, 1, -3, -1, -1, 1, -1, -3, -1, 1, -1, -1, -3,
-		-3, -1, -1, -1, -1, -3, -1, -1, -1, -1, -3, -1, -1, -1, -1, -3
-	};
+    static const double STRETCH_CONSTANT_2D;
+    static const double SQUISH_CONSTANT_2D;
+    static const double STRETCH_CONSTANT_3D;
+    static const double SQUISH_CONSTANT_3D;
+    static const double STRETCH_CONSTANT_4D;
+    static const double SQUISH_CONSTANT_4D;
+    static const int NORM_CONSTANT_2D;
+    static const int NORM_CONSTANT_3D;
+    static const int NORM_CONSTANT_4D;
+    static const int DEFAULT_SEED;
+    static const int8_t GRADIENTS_2D[];
+    static const int8_t GRADIENTS_3D[];
+    static const int8_t GRADIENTS_4D[];
 
 	struct Contribution2
 	{
@@ -110,7 +74,7 @@ private:
 		{};
 	};
 
-	static Contribution2 **lookup2D;
+    static Contribution2 **lookup2D;
 	static Contribution3 **lookup3D;
 	static Contribution4 **lookup4D;
 	static bool initialized;
