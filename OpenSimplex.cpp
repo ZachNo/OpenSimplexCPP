@@ -2,6 +2,53 @@
 #include <utility>
 
 bool OpenSimplex::initialized = false;
+OpenSimplex::Contribution2 **OpenSimplex::lookup2D;
+OpenSimplex::Contribution3 **OpenSimplex::lookup3D;
+OpenSimplex::Contribution4 **OpenSimplex::lookup4D;
+const double OpenSimplex::STRETCH_CONSTANT_2D = -0.211324865405187;	// (1 / Math.sqrt(2 + 1) - 1) / 2
+const double OpenSimplex::SQUISH_CONSTANT_2D = 0.366025403784439;	// (Math.sqrt(2 + 1) - 1) / 2
+const double OpenSimplex::STRETCH_CONSTANT_3D = -1.0 / 6;			// (1 / Math.sqrt(3 + 1) - 1) / 3
+const double OpenSimplex::SQUISH_CONSTANT_3D = 1.0 / 3;				// (Math.sqrt(3 + 1) - 1) / 3
+const double OpenSimplex::STRETCH_CONSTANT_4D = -0.138196601125011;	// (1 / Math.sqrt(4 + 1) - 1) / 4
+const double OpenSimplex::SQUISH_CONSTANT_4D = 0.309016994374947;	// (Math.sqrt(4 + 1) - 1) / 4
+const int OpenSimplex::NORM_CONSTANT_2D = 47;
+const int OpenSimplex::NORM_CONSTANT_3D = 103;
+const int OpenSimplex::NORM_CONSTANT_4D = 30;
+const int OpenSimplex::DEFAULT_SEED = 0;
+const int8_t OpenSimplex::GRADIENTS_2D[4*4] = {
+    5, 2, 2, 5,
+    -5, 2, -2, 5,
+    5, -2, 2, -5,
+    -5, -2, -2, -5
+};
+const int8_t OpenSimplex::GRADIENTS_3D[9*9] = {
+    -11, 4, 4, -4, 11, 4, -4, 4, 11,
+    11, 4, 4, 4, 11, 4, 4, 4, 11,
+    -11, -4, 4, -4, -11, 4, -4, -4, 11,
+    11, -4, 4, 4, -11, 4, 4, -4, 11,
+    -11, 4, -4, -4, 11, -4, -4, 4, -11,
+    11, 4, -4, 4, 11, -4, 4, 4, -11,
+    -11, -4, -4, -4, -11, -4, -4, -4, -11,
+    11, -4, -4, 4, -11, -4, 4, -4, -11
+};
+const int8_t OpenSimplex::GRADIENTS_4D[16*16] = {
+    3, 1, 1, 1, 1, 3, 1, 1, 1, 1, 3, 1, 1, 1, 1, 3,
+    -3, 1, 1, 1, -1, 3, 1, 1, -1, 1, 3, 1, -1, 1, 1, 3,
+    3, -1, 1, 1, 1, -3, 1, 1, 1, -1, 3, 1, 1, -1, 1, 3,
+    -3, -1, 1, 1, -1, -3, 1, 1, -1, -1, 3, 1, -1, -1, 1, 3,
+    3, 1, -1, 1, 1, 3, -1, 1, 1, 1, -3, 1, 1, 1, -1, 3,
+    -3, 1, -1, 1, -1, 3, -1, 1, -1, 1, -3, 1, -1, 1, -1, 3,
+    3, -1, -1, 1, 1, -3, -1, 1, 1, -1, -3, 1, 1, -1, -1, 3,
+    -3, -1, -1, 1, -1, -3, -1, 1, -1, -1, -3, 1, -1, -1, -1, 3,
+    3, 1, 1, -1, 1, 3, 1, -1, 1, 1, 3, -1, 1, 1, 1, -3,
+    -3, 1, 1, -1, -1, 3, 1, -1, -1, 1, 3, -1, -1, 1, 1, -3,
+    3, -1, 1, -1, 1, -3, 1, -1, 1, -1, 3, -1, 1, -1, 1, -3,
+    -3, -1, 1, -1, -1, -3, 1, -1, -1, -1, 3, -1, -1, -1, 1, -3,
+    3, 1, -1, -1, 1, 3, -1, -1, 1, 1, -3, -1, 1, 1, -1, -3,
+    -3, 1, -1, -1, -1, 3, -1, -1, -1, 1, -3, -1, -1, 1, -1, -3,
+    3, -1, -1, -1, 1, -3, -1, -1, 1, -1, -3, -1, 1, -1, -1, -3,
+    -3, -1, -1, -1, -1, -3, -1, -1, -1, -1, -3, -1, -1, -1, -1, -3
+};
 
 OpenSimplex::OpenSimplex(int64_t seed)
 {
@@ -196,7 +243,7 @@ double OpenSimplex::noise(double x, double y)
 		(int)(inSum + yins) << 2 |
 		(int)(inSum + xins) << 4;
 
-	Contribution2 *c = lookup2D[hash];
+    Contribution2 *c = lookup2D[hash];
 
 	double value = 0.0;
 	while (c != nullptr)
@@ -210,7 +257,7 @@ double OpenSimplex::noise(double x, double y)
 			int py = ysb + c->ysb;
 
 			int i = perm2D[(perm[px & 0xFF] + py) & 0xFF];
-			double valuePart = GRADIENTS_2D[i] * dx + GRADIENTS_2D[i + 1] * dy;
+            double valuePart = GRADIENTS_2D[i] * dx + GRADIENTS_2D[i + 1] * dy;
 
 			attn *= attn;
 			value += attn * attn * valuePart;
